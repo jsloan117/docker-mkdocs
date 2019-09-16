@@ -1,5 +1,5 @@
-.git
-.cache
-.azure-pipelines.yml
+.*
+# mkdocs
 docs/
 mkdocs.yml
+site/
