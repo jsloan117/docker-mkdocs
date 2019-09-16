@@ -1,5 +1,3 @@
-# docker-mkdocs
-
 This container contains mkdocs and a handful of themes for quick use. Please see 'Run from Docker registry' for more details and commands.
 
 ``` bash
