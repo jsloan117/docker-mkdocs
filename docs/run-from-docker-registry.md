@@ -17,8 +17,8 @@ Building mkdocs site
 docker run --rm -it -v $PWD:/docs jsloan117/docker-mkdocs /bin/bash -c "cd /docs && mkdocs build"
 ```
 
-Publishing to github pages
+Publishing to github pages requires some method to authenticate against GitHub.
 
 ```bash
-docker run --rm -it -v $PWD:/docs jsloan117/docker-mkdocs /bin/bash -c "cd /docs && mkdocs gh-deploy"
+docker run --rm -it -v /root/.ssh:/root/.ssh -v $PWD:/docs jsloan117/docker-mkdocs /bin/bash -c "cd /docs && mkdocs gh-deploy"
 ```
