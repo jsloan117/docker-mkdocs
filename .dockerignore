@@ -1,4 +1,6 @@
 .*
+.cache
+.git
 # mkdocs
 docs/
 mkdocs.yml

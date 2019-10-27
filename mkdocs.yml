@@ -1,5 +1,5 @@
 site_name: docker-mkdocs
-site_url: http://jsloan117.github.io/docker-mkdocs
+site_url: http://www.jonathansloan.me/docker-mkdocs
 repo_url: https://github.com/jsloan117/docker-mkdocs
 theme:
   name: 'material'
