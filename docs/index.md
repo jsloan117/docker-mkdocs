@@ -22,7 +22,7 @@
 
 This container contains MkDocs and a handful of themes for quick use. Please see [Run from Docker registry](http://jsloan117.github.io/docker-mkdocs/run-from-docker-registry) for more details and commands.
 
-Mount the folder where your `mkdocs.yml` files resides as a volume to /docs.
+Mount the folder where your `mkdocs.yml` files reside as a volume to /docs.
 
 ``` bash
 docker run --rm -it -v ${PWD}:/docs jsloan117/docker-mkdocs mkdocs --version
