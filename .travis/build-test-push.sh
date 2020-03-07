@@ -32,9 +32,8 @@ build_images () {
     echo -e "\n<<< Building ${DISTRO} image >>>\n"
     docker build --rm -f Dockerfile."${DISTRO}" -t "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" .
   done
-  echo -e '\n\n\n'
-  docker image ls
-  echo -e '\n\n\n'
+  echo -e '\n<<< Cleaning up dangling images >>>\n'
+  docker rmi "$(docker images -f dangling=true -q)" 2>&-
 }
 
 install_prereqs () {
@@ -65,18 +64,17 @@ vulnerability_scanner () {
   #  snyk auth "${SNYK_TOKEN}" &> /dev/null
   #  snyk monitor --docker "${IMAGE_NAME}":"${IMAGE_TAG}" --file=Dockerfile
   #fi
-  echo -e '\n\n\n'
   docker image ls
-  echo -e '\n\n\n'
-  docker rmi $(docker images -f dangling=true -q)
   for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
-    trivy --exit-code 0 --severity "UNKNOWN,LOW,MEDIUM,HIGH" --no-progress "${IMAGE}"
-    trivy --exit-code 1 --severity CRITICAL --no-progress "${IMAGE}"
-    if [[ "${TRAVIS_BRANCH}" = master ]]; then
-      snyk auth "${SNYK_TOKEN}" &> /dev/null
-      snyk monitor --docker "${IMAGE}" --file=Dockerfile
-    fi
+    echo "${IMAGE}"
+    ##trivy --exit-code 0 --severity "UNKNOWN,LOW,MEDIUM,HIGH" --no-progress "${IMAGE}"
+    ##trivy --exit-code 1 --severity CRITICAL --no-progress "${IMAGE}"
+    ##if [[ "${TRAVIS_BRANCH}" = master ]]; then
+    ##  snyk auth "${SNYK_TOKEN}" &> /dev/null
+    ##  snyk monitor --docker "${IMAGE}" --file=Dockerfile
+    ##fi
   done
+  exit 1
 }
 
 test_images () {
@@ -84,7 +82,7 @@ test_images () {
   export GOSS_SLEEP=5
   #dgoss run -e PUID=1000 -e PGID=1000 "${IMAGE_NAME}":"${IMAGE_TAG}"
   for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
-    dgoss run -e PUID=1000 -e PGID=1000 "${IMAGE}"
+    dgoss run -e PUID=1000 -e PGID=1000 -v "${PWD}":/docs "${IMAGE}"
   done
 }
 
