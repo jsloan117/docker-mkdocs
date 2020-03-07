@@ -57,7 +57,7 @@ install_prereqs () {
 
 vulnerability_scanner () {
   echo -e '\n<<< Checking image for vulnerabilities >>>\n'
-  trivy --clear-cache
+  #trivy --clear-cache
   #trivy --exit-code 0 --severity "UNKNOWN,LOW,MEDIUM,HIGH" --no-progress "${IMAGE_NAME}":"${IMAGE_TAG}"
   #trivy --exit-code 1 --severity CRITICAL --no-progress "${IMAGE_NAME}":"${IMAGE_TAG}"
   #if [[ "${TRAVIS_BRANCH}" = master ]]; then
@@ -65,6 +65,7 @@ vulnerability_scanner () {
   #  snyk monitor --docker "${IMAGE_NAME}":"${IMAGE_TAG}" --file=Dockerfile
   #fi
   for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
+    trivy --clear-cache
     trivy --exit-code 0 --severity "UNKNOWN,LOW,MEDIUM,HIGH" --no-progress "${IMAGE}"
     trivy --exit-code 1 --severity CRITICAL --no-progress "${IMAGE}"
     if [[ "${TRAVIS_BRANCH}" = master ]]; then
@@ -75,26 +76,22 @@ vulnerability_scanner () {
 }
 
 test_images () {
-  echo -e '\n<<< Testing default image >>>\n'
   export GOSS_SLEEP=5
-  #dgoss run -e PUID=1000 -e PGID=1000 "${IMAGE_NAME}":"${IMAGE_TAG}"
   for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
+    echo -e "\n<<< Testing ${IMAGE} image >>>\n"
     dgoss run -e PUID=1000 -e PGID=1000 -v "${PWD}":/docs "${IMAGE}"
   done
+  exit 1
 }
 
 push_images () {
   echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin &> /dev/null
-  echo -e '\n<<< Pushing default image >>>\n'
   docker tag "${IMAGE_NAME}":"${IMAGE_TAG}" "${IMAGE_NAME}":"${NEXT_VERSION}"
-  #docker push "${IMAGE_NAME}":"${IMAGE_TAG}"
-  #docker push "${IMAGE_NAME}":"${NEXT_VERSION}"
   for DISTRO in $(find . -type f -iname "Dockerfile.*" -print | cut -d'/' -f2 | cut -d'.' -f 2); do
     docker tag "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" "${IMAGE_NAME}":"${DISTRO}"-"${NEXT_VERSION}"
-  #  docker push "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}"
-  #  docker push "${IMAGE_NAME}":"${DISTRO}"-"${NEXT_VERSION}"
   done
   for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
+    echo -e "\n<<< Pushing ${IMAGE} image >>>\n"
     docker push "${IMAGE}"
   done
 }
