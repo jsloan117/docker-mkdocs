@@ -64,17 +64,14 @@ vulnerability_scanner () {
   #  snyk auth "${SNYK_TOKEN}" &> /dev/null
   #  snyk monitor --docker "${IMAGE_NAME}":"${IMAGE_TAG}" --file=Dockerfile
   #fi
-  docker image ls
   for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
-    echo "${IMAGE}"
-    ##trivy --exit-code 0 --severity "UNKNOWN,LOW,MEDIUM,HIGH" --no-progress "${IMAGE}"
-    ##trivy --exit-code 1 --severity CRITICAL --no-progress "${IMAGE}"
-    ##if [[ "${TRAVIS_BRANCH}" = master ]]; then
-    ##  snyk auth "${SNYK_TOKEN}" &> /dev/null
-    ##  snyk monitor --docker "${IMAGE}" --file=Dockerfile
-    ##fi
+    trivy --exit-code 0 --severity "UNKNOWN,LOW,MEDIUM,HIGH" --no-progress "${IMAGE}"
+    trivy --exit-code 1 --severity CRITICAL --no-progress "${IMAGE}"
+    if [[ "${TRAVIS_BRANCH}" = master ]]; then
+      snyk auth "${SNYK_TOKEN}" &> /dev/null
+      snyk monitor --docker "${IMAGE}" --file=Dockerfile
+    fi
   done
-  exit 1
 }
 
 test_images () {
