@@ -27,11 +27,14 @@ get_version () {
 
 build_images () {
   echo -e '\n<<< Building default image >>>\n'
-  docker build -f Dockerfile -t "${IMAGE_NAME}":"${IMAGE_TAG}" .
+  docker build --rm -f Dockerfile -t "${IMAGE_NAME}":"${IMAGE_TAG}" .
   for DISTRO in $(find . -type f -iname "Dockerfile.*" -print | cut -d'/' -f2 | cut -d'.' -f 2); do
     echo -e "\n<<< Building ${DISTRO} image >>>\n"
-    docker build -f Dockerfile."${DISTRO}" -t "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" .
+    docker build --rm -f Dockerfile."${DISTRO}" -t "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" .
   done
+  echo -e '\n\n\n'
+  docker image ls
+  echo -e '\n\n\n'
 }
 
 install_prereqs () {
@@ -65,6 +68,7 @@ vulnerability_scanner () {
   echo -e '\n\n\n'
   docker image ls
   echo -e '\n\n\n'
+  docker rmi $(docker images -f dangling=true -q)
   for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
     trivy --exit-code 0 --severity "UNKNOWN,LOW,MEDIUM,HIGH" --no-progress "${IMAGE}"
     trivy --exit-code 1 --severity CRITICAL --no-progress "${IMAGE}"
