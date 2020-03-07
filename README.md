@@ -1,9 +1,8 @@
 # docker-mkdocs
 
 ![License](https://img.shields.io/badge/License-GPLv3-blue.svg)
-[![Build Status](https://dev.azure.com/jsloan117/docker-containers/_apis/build/status/mkdocs?branchName=master)](https://dev.azure.com/jsloan117/docker-containers/_build/latest?definitionId=6&branchName=master)
+[![Build Status](https://travis-ci.com/jsloan117/docker-mkdocs.svg?branch=master)](https://travis-ci.com/jsloan117/docker-mkdocs)
 ![Docker Pulls](https://img.shields.io/docker/pulls/jsloan117/docker-mkdocs.svg)
-![Microbadger](https://images.microbadger.com/badges/image/jsloan117/docker-mkdocs.svg)
 
 This container contains MkDocs and a handful of themes for quick use. Please see [Run from Docker registry](http://jsloan117.github.io/docker-mkdocs/run-from-docker-registry) for more details and commands.
 

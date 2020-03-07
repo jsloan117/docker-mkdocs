@@ -1,0 +1,3 @@
+process:
+  mkdocs:
+    running: true

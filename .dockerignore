@@ -1,7 +1,19 @@
-.*
-.cache
-.git
-# mkdocs
+*.aes
+.cache/
 docs/
+.dockerignore
+*.enc
+.git/
+.gitignore
+goss.yaml
+goss_wait.yaml
+.hadolint.yaml
+*.md
 mkdocs.yml
+.prettierrc
 site/
+.travis/
+.travis.yml
+.trivyignore
+.yamllint
+.ssh

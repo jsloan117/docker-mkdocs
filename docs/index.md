@@ -9,14 +9,11 @@
   <a href="https://github.com/jsloan117/docker-mkdocs/blob/master/LICENSE/">
     <img alt="license" src="https://img.shields.io/badge/License-GPLv3-blue.svg" />
   </a>
-  <a href="https://dev.azure.com/jsloan117/docker-containers/_build?definitionId=6">
-    <img alt="build" src="https://dev.azure.com/jsloan117/docker-containers/_apis/build/status/mkdocs?branchName=master" />
+  <a href="https://travis-ci.com/jsloan117/docker-mkdocs">
+    <img alt="build" src="https://travis-ci.com/jsloan117/docker-mkdocs.svg?branch=master" />
   </a>
   <a href="https://hub.docker.com/r/jsloan117/docker-mkdocs/">
     <img alt="pulls" src="https://img.shields.io/docker/pulls/jsloan117/docker-mkdocs.svg" />
-  </a>
-  <a href="https://microbadger.com/images/jsloan117/docker-mkdocs">
-    <img alt="Microbadger" src="https://images.microbadger.com/badges/image/jsloan117/docker-mkdocs.svg" />
   </a>
 </p>
 
