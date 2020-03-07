@@ -29,6 +29,7 @@ build_images () {
   echo -e '\n<<< Building default image >>>\n'
   docker build -f Dockerfile -t "${IMAGE_NAME}":"${IMAGE_TAG}" .
   for DISTRO in $(find . -type f -iname "Dockerfile.*" -print | cut -d'/' -f2 | cut -d'.' -f 2); do
+    echo -e "\n<<< Building ${DISTRO} image >>>\n"
     docker build -f Dockerfile."${DISTRO}" -t "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" .
   done
 }
