@@ -74,7 +74,7 @@ test_images () {
   export GOSS_SLEEP=5
   for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
     echo -e "\n<<< Testing ${IMAGE} image >>>\n"
-    dgoss run -e PUID=1000 -e PGID=1000 -v "${PWD}":/docs "${IMAGE}"
+    dgoss run -e PUID=1000 -e PGID=1000 -v "${PWD}":/docs "${IMAGE}" serve -a 127.0.0.1:8000
   done
 }
 

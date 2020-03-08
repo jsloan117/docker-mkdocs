@@ -1,3 +1,4 @@
-process:
-  mkdocs:
-    running: true
+http:
+  http://127.0.0.1:8000:
+    status: 200
+    timeout: 3000
