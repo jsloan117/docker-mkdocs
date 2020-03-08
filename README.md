@@ -9,7 +9,7 @@ This container contains MkDocs and a handful of themes for quick use. Please see
 Mount the folder where your `mkdocs.yml` file resides as a volume to /docs.
 
 ``` bash
-docker run --rm -it -v ${PWD}:/docs jsloan117/mkdocs --version
+docker run --rm -v ${PWD}:/docs jsloan117/mkdocs --version
 ```
 
 ## Documentation
