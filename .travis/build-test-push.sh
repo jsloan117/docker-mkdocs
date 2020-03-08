@@ -2,7 +2,7 @@
 # build, test and push docker images
 
 set -euo pipefail
-set -xv
+
 if [ "${TRAVIS_BRANCH}" = master ]; then
   IMAGE_TAG=latest
 else
@@ -32,6 +32,10 @@ build_images () {
     echo -e "\n<<< Building ${DISTRO} image >>>\n"
     docker build --rm -f Dockerfile."${DISTRO}" -t "${IMAGE_NAME}":"${IMAGE_TAG}"-"${DISTRO}" .
   done
+  if docker image ls | tail -n+2 | awk '{print $2}'| grep '<none>'; then
+    echo -e '\n<<< Cleaning up dangling images >>>\n'
+    docker rmi "$(docker images -f dangling=true -q)" 2>&-
+  fi 
 }
 
 install_prereqs () {
