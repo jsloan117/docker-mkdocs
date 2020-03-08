@@ -32,8 +32,6 @@ build_images () {
     echo -e "\n<<< Building ${DISTRO} image >>>\n"
     docker build --rm -f Dockerfile."${DISTRO}" -t "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" .
   done
-  echo -e '\n<<< Cleaning up dangling images >>>\n'
-  docker rmi "$(docker images -f dangling=true -q)" 2>&-
 }
 
 install_prereqs () {
