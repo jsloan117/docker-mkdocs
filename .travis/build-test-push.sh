@@ -78,7 +78,6 @@ test_images () {
     echo -e "\n<<< Testing ${IMAGE} image >>>\n"
     dgoss run -e PUID=1000 -e PGID=1000 -v "${PWD}":/docs "${IMAGE}"
   done
-  exit 1
 }
 
 push_images () {
