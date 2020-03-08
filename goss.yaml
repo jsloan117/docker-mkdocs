@@ -1,10 +1,3 @@
-command:
-  package:
-    exit-status: 0
-    exec: pip list | grep mkdocs
-  version:
-    exit-status: 0
-    exec: mkdocs --version
 http:
   http://127.0.0.1:8000:
     status: 200
