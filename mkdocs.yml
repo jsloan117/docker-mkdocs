@@ -4,12 +4,12 @@ repo_url: https://github.com/jsloan117/docker-mkdocs
 theme:
   name: 'material'
 markdown_extensions:
-    - toc:
-        permalink: True
-        separator: "_"
+  - toc:
+      permalink: true
+      separator: "_"
 nav:
-   - 'Home': 'index.md'
-   - 'Run from Docker registry': 'run-from-docker-registry.md'
-   - 'Preinstalled Themes': 'preinstalled-themes.md'
+  - 'Home': 'index.md'
+  - 'Run from Docker registry': 'run-from-docker-registry.md'
+  - 'Preinstalled Themes': 'preinstalled-themes.md'
 plugins:
-    - search
+  - search
