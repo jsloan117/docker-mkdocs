@@ -2,7 +2,7 @@
 # build, test and push docker images
 
 set -euo pipefail
-
+set -xv
 if [ "${TRAVIS_BRANCH}" = master ]; then
   IMAGE_TAG=latest
 else
