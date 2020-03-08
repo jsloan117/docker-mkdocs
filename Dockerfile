@@ -1,10 +1,11 @@
 FROM alpine:3.11
-LABEL Name=docker-mkdocs maintainer="Jonathan Sloan"
+LABEL Name=mkdocs maintainer="Jonathan Sloan"
 
 RUN echo "*** installing packages ***" \
-    && apk --no-cache add bash git git-fast-import openssh-client python3 shadow \
+    && apk --no-cache add git git-fast-import openssh-client python3 \
     && ln -s /usr/bin/python3 /usr/bin/python \
-    && wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py'; python3 get-pip.py --disable-pip-version-check --no-cache-dir \
+    && wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py' \
+    && python3 get-pip.py --disable-pip-version-check --no-cache-dir \
     && rm -f get-pip.py \
     && pip --no-cache-dir install mkdocs mkdocs-material \
     mkdocs-rtd-dropdown mkdocs-cinder mkdocs-alabaster \
@@ -17,4 +18,5 @@ WORKDIR /docs
 
 VOLUME [ "/docs" ]
 
-CMD [ "mkdocs", "serve", "-a", "0.0.0.0:8000" ]
+ENTRYPOINT [ "mkdocs" ]
+CMD [ "--help" ]

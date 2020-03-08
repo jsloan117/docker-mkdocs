@@ -57,20 +57,17 @@ install_prereqs () {
 
 vulnerability_scanner () {
   echo -e '\n<<< Checking image for vulnerabilities >>>\n'
-  #trivy --clear-cache
-  #trivy --exit-code 0 --severity "UNKNOWN,LOW,MEDIUM,HIGH" --no-progress "${IMAGE_NAME}":"${IMAGE_TAG}"
-  #trivy --exit-code 1 --severity CRITICAL --no-progress "${IMAGE_NAME}":"${IMAGE_TAG}"
-  #if [[ "${TRAVIS_BRANCH}" = master ]]; then
-  #  snyk auth "${SNYK_TOKEN}" &> /dev/null
-  #  snyk monitor --docker "${IMAGE_NAME}":"${IMAGE_TAG}" --file=Dockerfile
-  #fi
+  trivy --clear-cache
   for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
-    trivy --clear-cache
-    trivy --exit-code 0 --severity "UNKNOWN,LOW,MEDIUM,HIGH" --no-progress "${IMAGE}"
-    trivy --exit-code 1 --severity CRITICAL --no-progress "${IMAGE}"
+    trivy --exit-code 0 --severity "UNKNOWN,LOW,MEDIUM,HIGH" --light -q "${IMAGE}"
+    echo -e '\n<<< Critical Vulnerabilities >>>\n'
+    trivy --exit-code 1 --severity CRITICAL --light -q "${IMAGE}"
     if [[ "${TRAVIS_BRANCH}" = master ]]; then
       snyk auth "${SNYK_TOKEN}" &> /dev/null
-      snyk monitor --docker "${IMAGE}" --file=Dockerfile
+      snyk monitor --docker "${IMAGE_NAME}":"${IMAGE_TAG}" --file=Dockerfile
+      for DISTRO in $(find . -type f -iname "Dockerfile.*" -print | cut -d'/' -f2 | cut -d'.' -f 2); do
+        snyk monitor --docker "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" --file=Dockerfile."${DISTRO}"
+      done
     fi
   done
 }
@@ -96,7 +93,9 @@ push_images () {
   done
 }
 
-get_version
+if [[ "${TRAVIS_BRANCH}" = master ]]; then
+  get_version
+fi
 build_images
 install_prereqs
 if [[ "${VULNERABILITY_TEST}" = true ]]; then

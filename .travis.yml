@@ -4,7 +4,7 @@ dist: bionic
 
 env:
   global:
-    - IMAGE_NAME=jsloan117/docker-mkdocs
+    - IMAGE_NAME=jsloan117/mkdocs
 
 notifications:
   email: false
