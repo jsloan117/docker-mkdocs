@@ -30,7 +30,7 @@ build_images () {
   docker build --rm -f Dockerfile -t "${IMAGE_NAME}":"${IMAGE_TAG}" .
   for DISTRO in $(find . -type f -iname "Dockerfile.*" -print | cut -d'/' -f2 | cut -d'.' -f 2); do
     echo -e "\n<<< Building ${DISTRO} image >>>\n"
-    docker build --rm -f Dockerfile."${DISTRO}" -t "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" .
+    docker build --rm -f Dockerfile."${DISTRO}" -t "${IMAGE_NAME}":"${IMAGE_TAG}"-"${DISTRO}" .
   done
 }
 
@@ -64,7 +64,7 @@ vulnerability_scanner () {
       snyk auth "${SNYK_TOKEN}" &> /dev/null
       snyk monitor --docker "${IMAGE_NAME}":"${IMAGE_TAG}" --file=Dockerfile
       for DISTRO in $(find . -type f -iname "Dockerfile.*" -print | cut -d'/' -f2 | cut -d'.' -f 2); do
-        snyk monitor --docker "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" --file=Dockerfile."${DISTRO}"
+        snyk monitor --docker "${IMAGE_NAME}":"${IMAGE_TAG}"-"${DISTRO}" --file=Dockerfile."${DISTRO}"
       done
     fi
   done
@@ -81,24 +81,17 @@ push_images () {
   echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin &> /dev/null
   if [[ "${TRAVIS_BRANCH}" = dev ]]; then
     docker push "${IMAGE_NAME}":"${IMAGE_TAG}"
+    docker push "${IMAGE_NAME}":"${IMAGE_TAG}"-"${DISTRO}"
   elif [[ "${TRAVIS_BRANCH}" = master ]]; then
     docker tag "${IMAGE_NAME}":"${IMAGE_TAG}" "${IMAGE_NAME}":"${NEXT_VERSION}"
     for DISTRO in $(find . -type f -iname "Dockerfile.*" -print | cut -d'/' -f2 | cut -d'.' -f 2); do
-      docker tag "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" "${IMAGE_NAME}":"${DISTRO}"-"${NEXT_VERSION}"
+      docker tag "${IMAGE_NAME}":"${IMAGE_TAG}"-"${DISTRO}" "${IMAGE_NAME}":"${NEXT_VERSION}"-"${DISTRO}"
     done
     for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
       echo -e "\n<<< Pushing ${IMAGE} image >>>\n"
       docker push "${IMAGE}"
     done  
   fi
-  #docker tag "${IMAGE_NAME}":"${IMAGE_TAG}" "${IMAGE_NAME}":"${NEXT_VERSION}"
-  #for DISTRO in $(find . -type f -iname "Dockerfile.*" -print | cut -d'/' -f2 | cut -d'.' -f 2); do
-  #  docker tag "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" "${IMAGE_NAME}":"${DISTRO}"-"${NEXT_VERSION}"
-  #done
-  #for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
-  #  echo -e "\n<<< Pushing ${IMAGE} image >>>\n"
-  #  docker push "${IMAGE}"
-  #done
 }
 
 get_version
