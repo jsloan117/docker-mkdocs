@@ -1,22 +1,21 @@
 FROM ubuntu:18.04
-LABEL Name=docker-mkdocs Version=1.2
-LABEL maintainer="Jonathan Sloan"
+LABEL Name=mkdocs maintainer="Jonathan Sloan"
 
 ENV DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8 LANG=C.UTF-8
 
-RUN echo "*** updating system ***" \
-    && apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade \
-    && echo "*** installing packages ***" \
-    && apt-get -y install python3-pip git \
+RUN echo "*** installing packages ***" \
+    && apt-get update && apt-get -y install --no-install-recommends \
+    python3-pip python3-setuptools git \
     && pip3 --no-cache-dir install mkdocs mkdocs-material \
     mkdocs-rtd-dropdown mkdocs-cinder mkdocs-alabaster \
     mkdocs-pitch-dark mkdocs-windmill-dark pygments \
     && git config --global user.name MkDocs \
     && echo "*** cleanup ***" \
-    && apt-get autoclean && apt-get autoremove && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apt/*
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apt/*
 
 WORKDIR /docs
 
 VOLUME [ "/docs" ]
 
-CMD [ "mkdocs", "serve", "-a", "0.0.0.0:8000" ]
+ENTRYPOINT [ "mkdocs" ]
+CMD [ "--help" ]
