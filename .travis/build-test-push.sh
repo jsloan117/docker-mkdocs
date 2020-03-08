@@ -80,8 +80,10 @@ test_images () {
 push_images () {
   echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin &> /dev/null
   if [[ "${TRAVIS_BRANCH}" = dev ]]; then
-    docker push "${IMAGE_NAME}":"${IMAGE_TAG}"
-    docker push "${IMAGE_NAME}":"${IMAGE_TAG}"-"${DISTRO}"
+    for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
+      echo -e "\n<<< Pushing ${IMAGE} image >>>\n"
+      docker push "${IMAGE}"
+    done
   elif [[ "${TRAVIS_BRANCH}" = master ]]; then
     docker tag "${IMAGE_NAME}":"${IMAGE_TAG}" "${IMAGE_NAME}":"${NEXT_VERSION}"
     for DISTRO in $(find . -type f -iname "Dockerfile.*" -print | cut -d'/' -f2 | cut -d'.' -f 2); do
