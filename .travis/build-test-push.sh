@@ -79,19 +79,29 @@ test_images () {
 
 push_images () {
   echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin &> /dev/null
-  docker tag "${IMAGE_NAME}":"${IMAGE_TAG}" "${IMAGE_NAME}":"${NEXT_VERSION}"
-  for DISTRO in $(find . -type f -iname "Dockerfile.*" -print | cut -d'/' -f2 | cut -d'.' -f 2); do
-    docker tag "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" "${IMAGE_NAME}":"${DISTRO}"-"${NEXT_VERSION}"
-  done
-  for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
-    echo -e "\n<<< Pushing ${IMAGE} image >>>\n"
-    docker push "${IMAGE}"
-  done
+  if [[ "${TRAVIS_BRANCH}" = dev ]]; then
+    docker push "${IMAGE_NAME}":"${IMAGE_TAG}"
+  elif [[ "${TRAVIS_BRANCH}" = master ]]; then
+    docker tag "${IMAGE_NAME}":"${IMAGE_TAG}" "${IMAGE_NAME}":"${NEXT_VERSION}"
+    for DISTRO in $(find . -type f -iname "Dockerfile.*" -print | cut -d'/' -f2 | cut -d'.' -f 2); do
+      docker tag "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" "${IMAGE_NAME}":"${DISTRO}"-"${NEXT_VERSION}"
+    done
+    for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
+      echo -e "\n<<< Pushing ${IMAGE} image >>>\n"
+      docker push "${IMAGE}"
+    done  
+  fi
+  #docker tag "${IMAGE_NAME}":"${IMAGE_TAG}" "${IMAGE_NAME}":"${NEXT_VERSION}"
+  #for DISTRO in $(find . -type f -iname "Dockerfile.*" -print | cut -d'/' -f2 | cut -d'.' -f 2); do
+  #  docker tag "${IMAGE_NAME}":"${DISTRO}"-"${IMAGE_TAG}" "${IMAGE_NAME}":"${DISTRO}"-"${NEXT_VERSION}"
+  #done
+  #for IMAGE in $(docker image ls | tail -n+2 | awk '{OFS=":";} {print $1,$2}'| grep "${DOCKER_USER}"); do
+  #  echo -e "\n<<< Pushing ${IMAGE} image >>>\n"
+  #  docker push "${IMAGE}"
+  #done
 }
 
-if [[ "${TRAVIS_BRANCH}" = master ]]; then
-  get_version
-fi
+get_version
 build_images
 install_prereqs
 if [[ "${VULNERABILITY_TEST}" = true ]]; then
