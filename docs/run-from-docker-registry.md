@@ -1,15 +1,16 @@
-The container is available from the Docker registry and this is the simplest way to get it.
-To run the container use one of the following commands:
+The image is available from the Docker registry and this is the simplest way to get it.
+
+To run the image use one of the following commands:
 
 Get help on commands:
 
-``` bash
+```bash
 docker run --rm -v $PWD:/docs jsloan117/mkdocs
 ```
 
 Create a new MkDocs project:
 
-``` bash
+```bash
 docker run --rm -v $PWD:/docs jsloan117/mkdocs new docs
 ```
 
