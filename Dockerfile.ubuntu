@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-LABEL Name=mkdocs maintainer="Jonathan Sloan"
+LABEL Name=mkdocs Maintainer="Jonathan Sloan"
 
 ENV DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8 LANG=C.UTF-8
 
@@ -8,14 +8,16 @@ RUN echo "*** installing packages ***" \
     python3-pip python3-setuptools git \
     && pip3 --no-cache-dir install mkdocs mkdocs-material \
     mkdocs-rtd-dropdown mkdocs-cinder mkdocs-alabaster \
-    mkdocs-pitch-dark mkdocs-windmill-dark pygments \
+    mkdocs-pitch-dark mkdocs-windmill-dark pygments pymdown-extensions \
     && git config --global user.name MkDocs \
     && echo "*** cleanup ***" \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apt/*
+    && rm -rf /tmp/* /var/tmp/* /var/cache/apt/* /var/lib/apt/lists/*
 
 WORKDIR /docs
 
 VOLUME [ "/docs" ]
+
+COPY VERSION .
 
 ENTRYPOINT [ "mkdocs" ]
 CMD [ "--help" ]

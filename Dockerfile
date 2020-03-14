@@ -1,5 +1,5 @@
 FROM alpine:3.11
-LABEL Name=mkdocs maintainer="Jonathan Sloan"
+LABEL Name=mkdocs Maintainer="Jonathan Sloan"
 
 RUN echo "*** installing packages ***" \
     && apk --no-cache add git git-fast-import openssh-client python3 \
@@ -9,14 +9,16 @@ RUN echo "*** installing packages ***" \
     && rm -f get-pip.py \
     && pip --no-cache-dir install mkdocs mkdocs-material \
     mkdocs-rtd-dropdown mkdocs-cinder mkdocs-alabaster \
-    mkdocs-pitch-dark mkdocs-windmill-dark pygments \
+    mkdocs-pitch-dark mkdocs-windmill-dark pygments pymdown-extensions \
     && git config --global user.name MkDocs \
     && echo "*** cleanup ***" \
-    && rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
+    && rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/lib/apk/*
 
 WORKDIR /docs
 
 VOLUME [ "/docs" ]
+
+COPY VERSION .
 
 ENTRYPOINT [ "mkdocs" ]
 CMD [ "--help" ]
