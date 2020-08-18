@@ -2,7 +2,7 @@ FROM alpine:3.12
 LABEL Name=mkdocs Maintainer="Jonathan Sloan"
 
 RUN echo "*** installing packages ***" \
-    && apk --no-cache add git git-fast-import openssh-client python3 py3-pip \
+    && apk --no-cache add git git-fast-import openssh-client python3 py3-pip py3-wheel \
     && ln -s /usr/bin/python3 /usr/bin/python \
 #    && wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py' \
 #    && python3 get-pip.py --disable-pip-version-check --no-cache-dir \
