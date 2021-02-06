@@ -1,4 +1,4 @@
-FROM alpine:3.12
+FROM alpine:3.13
 LABEL Name=mkdocs Maintainer="Jonathan Sloan"
 
 RUN echo "*** installing packages ***" \
